@@ -1,0 +1,823 @@
+openapi: 3.0.0
+info:
+  title: Microservice Backend Areas and Clients API
+  version: "1.0.0"
+  description: API para la gestión de zonas de trabajo y clientes
+servers:
+  - url: http://localhost:10101
+    description: Servidor local de desarrollo
+paths:
+  /register-area:
+    post:
+      tags:
+        - Zonas de trabajo
+      summary: Registrar una zona de trabajo
+      description: Crea una nueva zona de trabajo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre_zona_trabajo:
+                  type: string
+                  description: Nombre de la zona de trabajo.
+                  example: Zona Norte
+                descripcion:
+                  type: string
+                  description: Descripción de la zona de trabajo.
+                  example: Zona asignada al equipo A.
+      responses:
+        "201":
+          description: Zona registrada con éxito.
+        "422":
+          description: Error de validación en los datos enviados.
+        "500":
+          description: Error interno del servidor.
+  /get-area/{id_zona_de_trabajo}:
+      get:
+        tags:
+          - Zonas de trabajo
+        summary: Obtiene información de una zona de trabajo
+        description: Devuelve información de una zona de trabajo específica basada en su ID.
+        parameters:
+          - name: id_zona_de_trabajo
+            in: path
+            description: ID de la zona de trabajo
+            required: true
+            schema:
+              type: integer
+              minimum: 1
+            example: 1
+        responses:
+          '200':
+            description: Zona de trabajo encontrada
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id_zona_de_trabajo:
+                      type: integer
+                      description: ID de la zona de trabajo
+                      example: 1
+                    nombre_zona_trabajo:
+                      type: string
+                      description: Nombre de la zona de trabajo
+                      example: "Zona Norte"
+                    descripcion:
+                      type: string
+                      description: Descripción de la zona de trabajo
+                      example: "Zona asignada para el área norte de la ciudad"
+          '404':
+            description: Zona de trabajo no encontrada
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: Mensaje de error
+                      example: "Zona de trabajo no encontrada"
+          '422':
+            description: Error de validación en los parámetros
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            description: Mensaje de error de validación
+                            example: "Ingrese un número de ID válido"
+                          param:
+                            type: string
+                            description: Parámetro con error
+                            example: "id_zona_de_trabajo"
+                          location:
+                            type: string
+                            description: Ubicación del error
+                            example: "params"
+          '500':
+            description: Error interno del servidor
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error
+                      example: "Internal Server Error"
+                    details:
+                      type: string
+                      description: Detalles del error
+                      example: "Error desconocido"
+  /get-areas:
+      get:
+        tags:
+          - Zonas de trabajo
+        summary: Obtener todas las zonas de trabajo
+        description: Este endpoint retorna una lista con todas las zonas de trabajo registradas en el sistema.
+        responses:
+          '200':
+            description: Lista de zonas de trabajo obtenida exitosamente
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id_zona_de_trabajo:
+                        type: number
+                        description: Identificador único de la zona de trabajo
+                        example: 1
+                      nombre_zona_trabajo:
+                        type: string
+                        description: Nombre de la zona de trabajo
+                        example: "Zona Norte"
+                      descripcion:
+                        type: string
+                        description: Descripción de la zona de trabajo
+                        example: "Zona enfocada en la distribución del área norte"
+          '500':
+            description: Error interno del servidor
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error genérico
+                      example: "Internal Server Error"
+                    details:
+                      type: string
+                      description: Detalles adicionales del error
+                      example: "Database connection failed"
+  /delete-area/{id_zona_de_trabajo}:
+      delete:
+        tags:
+          - Zonas de trabajo
+        summary: Eliminar una zona de trabajo
+        description: Este endpoint elimina una zona de trabajo específica identificada por su ID.
+        parameters:
+          - in: path
+            name: id_zona_de_trabajo
+            required: true
+            schema:
+              type: integer
+            description: ID de la zona de trabajo a eliminar.
+        responses:
+          '200':
+            description: Zona de trabajo eliminada con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Zona de trabajo eliminado con éxito"
+          '404':
+            description: Zona de trabajo no encontrada.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Zona de trabajo no encontrado."
+          '409':
+            description: Conflicto debido a referencias existentes.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "No se puede eliminar la Zona de trabajo debido a referencias existentes en otros registros."
+          '422':
+            description: Error de validación en los parámetros de entrada.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            example: "Ingrese un número de id valido"
+                          param:
+                            type: string
+                            example: "id_zona_de_trabajo"
+                          location:
+                            type: string
+                            example: "params"
+          '500':
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Error interno del servidor"
+                    details:
+                      type: string
+                      example: "Detalles del error"
+  /update-area/{id_zona_de_trabajo}:
+      put:
+        tags:
+          - Zonas de trabajo
+        summary: Actualizar una zona de trabajo
+        description: Actualiza la información de una zona de trabajo específica usando su ID.
+        parameters:
+          - name: id_zona_de_trabajo
+            in: path
+            description: ID único de la zona de trabajo que se desea actualizar.
+            required: true
+            schema:
+              type: integer
+        requestBody:
+          description: Datos para actualizar la zona de trabajo.
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nombre_zona_trabajo:
+                    type: string
+                    description: Nombre de la zona de trabajo.
+                    maxLength: 45
+                    example: "Zona Norte"
+                  descripcion:
+                    type: string
+                    description: Descripción de la zona de trabajo.
+                    maxLength: 255
+                    example: "Área destinada para proyectos de logística."
+              required:
+                - nombre_zona_trabajo
+        responses:
+          '200':
+            description: Zona de trabajo actualizada con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: "ok, Zona de trabajo actualizado con éxito"
+          '404':
+            description: Zona de trabajo no encontrada.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Zona de trabajo no encontrado."
+          '422':
+            description: Error de validación en los datos enviados.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            example: "Ingrese un número de id valido"
+                          param:
+                            type: string
+                            example: "id_zona_de_trabajo"
+                          location:
+                            type: string
+                            example: "params"
+          '500':
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Internal Server Error"
+                    details:
+                      type: string
+                      example: "Error de conexión a la base de datos"
+  /register-client:
+      post:
+        tags:
+          - Clientes
+        summary: Registrar un nuevo cliente
+        description: Registra un cliente con los datos proporcionados, validando los campos requeridos.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cedula:
+                    type: string
+                    description: Número de cédula del cliente (6-15 caracteres, solo números).
+                    example: "123456789"
+                  nombre_completo_cliente:
+                    type: string
+                    description: Nombre completo del cliente (6-200 caracteres).
+                    example: "Juan Pérez Rodríguez"
+                  direccion:
+                    type: string
+                    description: Dirección del cliente (5-255 caracteres).
+                    example: "Calle Falsa 123, Ciudad, País"
+                  telefono:
+                    type: string
+                    description: Número de teléfono del cliente (8-15 caracteres, solo números).
+                    example: "12345678"
+                  rut_nit:
+                    type: string
+                    description: RUT o NIT del cliente (opcional, máximo 30 caracteres).
+                    example: "123456789012345"
+                  razon_social:
+                    type: string
+                    description: Razón social del cliente (opcional, máximo 100 caracteres).
+                    example: "Compañía XYZ S.A."
+                  estado:
+                    type: string
+                    description: Estado del cliente, debe ser "Activo" o "Inactivo".
+                    example: "Activo"
+                  id_zona_de_trabajo:
+                    type: integer
+                    description: ID de la zona de trabajo asociada al cliente (opcional).
+                    example: 1
+        responses:
+          '201':
+            description: Cliente registrado con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: "Cliente registrado con éxito"
+          '422':
+            description: Error de validación en los datos proporcionados.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            description: Descripción del error.
+                          param:
+                            type: string
+                            description: Campo que causó el error.
+                          location:
+                            type: string
+                            description: Ubicación del campo (body).
+          '500':
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error.
+                    details:
+                      type: string
+                      description: Detalles adicionales sobre el error.
+  /get-clients:
+      get:
+        tags:
+          - Clientes
+        summary: Obtener todos los clientes
+        description: Recupera la lista de todos los clientes registrados en el sistema.
+        responses:
+          '200':
+            description: Lista de clientes recuperada con éxito.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id_cliente:
+                        type: integer
+                        description: ID único del cliente.
+                        example: 1
+                      cedula:
+                        type: string
+                        description: Número de cédula del cliente.
+                        example: "1234567890"
+                      nombre_completo_cliente:
+                        type: string
+                        description: Nombre completo del cliente.
+                        example: "Juan Pérez"
+                      direccion:
+                        type: string
+                        description: Dirección del cliente.
+                        example: "Calle Falsa 123"
+                      telefono:
+                        type: string
+                        description: Teléfono de contacto del cliente.
+                        example: "555-1234"
+                      rut_nit:
+                        type: string
+                        description: Número de RUT o NIT del cliente.
+                        example: "900123456-7"
+                      razon_social:
+                        type: string
+                        description: Razón social del cliente.
+                        example: "Empresa XYZ"
+                      estado:
+                        type: string
+                        description: Estado del cliente (activo o inactivo).
+                        example: "activo"
+                      id_zona_de_trabajo:
+                        type: integer
+                        description: ID de la zona de trabajo asociada al cliente.
+                        example: 2
+          '500':
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      description: Mensaje de error.
+                      example: Internal Server Error
+                    details:
+                      type: string
+                      description: Detalles del error.
+                      example: "Detalles específicos del error"
+  /get-client/{id_cliente}:
+      get:
+        tags:
+          - Clientes
+        summary: Obtener cliente por ID
+        description: Obtiene la información de un cliente especificado por su `id_cliente`.
+        parameters:
+          - name: id_cliente
+            in: path
+            required: true
+            description: ID único del cliente.
+            schema:
+              type: integer
+              example: 1
+        responses:
+          '200':
+            description: Cliente encontrado.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id_cliente:
+                      type: integer
+                      example: 1
+                    nombre_completo_cliente:
+                      type: string
+                      example: "Juan Pérez"
+                    direccion:
+                      type: string
+                      example: "Calle Falsa 123"
+                    telefono:
+                      type: string
+                      example: "555-1234"
+                    rut_nit:
+                      type: string
+                      example: "123456789"
+                    razon_social:
+                      type: string
+                      example: "Empresa S.A."
+                    estado:
+                      type: string
+                      example: "activo"
+                    id_zona_de_trabajo:
+                      type: integer
+                      example: 2
+          '404':
+            description: Cliente no encontrado.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Cliente no encontrado"
+          '422':
+            description: Error de validación.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            example: "Ingrese un número de id valido"
+                          param:
+                            type: string
+                            example: "id_cliente"
+                          location:
+                            type: string
+                            example: "params"
+          '500':
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Internal Server Error"
+                    details:
+                      type: string
+                      example: "Error inesperado en el servidor"
+  /delete-client/{id_cliente}:
+      delete:
+        tags:
+          - Clientes
+        summary: Eliminar un cliente
+        description: Permite eliminar un cliente por su identificador único (`id_cliente`). Si el cliente tiene referencias en otros registros, la eliminación no será posible.
+        parameters:
+          - in: path
+            name: id_cliente
+            required: true
+            description: ID único del cliente a eliminar.
+            schema:
+              type: integer
+              example: 123
+        responses:
+          '200':
+            description: Cliente eliminado con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: Cliente eliminado con éxito
+          '404':
+            description: Cliente no encontrado.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: Cliente no encontrado.
+          '409':
+            description: Conflicto debido a referencias existentes.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: No se puede eliminar el cliente debido a referencias existentes en otros registros.
+          '422':
+            description: Error de validación en los parámetros.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            example: Ingrese un número de id válido
+                          param:
+                            type: string
+                            example: id_cliente
+                          location:
+                            type: string
+                            example: params
+          '500':
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: Error interno del servidor
+                    details:
+                      type: string
+                      example: Mensaje de error detallado.
+  /update-client/{id_cliente}:
+      put:
+        tags:
+          - Clientes
+        summary: Actualizar información de un cliente
+        description: Actualiza la información de un cliente existente mediante su ID.
+        parameters:
+          - name: id_cliente
+            in: path
+            description: ID del cliente que se desea actualizar
+            required: true
+            schema:
+              type: integer
+              example: 1
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cedula:
+                    type: string
+                    description: Número de cédula del cliente (6 a 15 caracteres).
+                    example: "123456789"
+                  nombre_completo_cliente:
+                    type: string
+                    description: Nombre completo del cliente (mínimo 6 y máximo 200 caracteres).
+                    example: "Juan Pérez Rodríguez"
+                  direccion:
+                    type: string
+                    description: Dirección del cliente (5 a 255 caracteres).
+                    example: "Calle 123, Ciudad XYZ"
+                  telefono:
+                    type: string
+                    description: Número de teléfono del cliente (8 a 15 caracteres, solo números).
+                    example: "123456789"
+                  rut_nit:
+                    type: string
+                    description: Número RUT/NIT del cliente (opcional, máximo 30 caracteres).
+                    example: "12345678901234"
+                  razon_social:
+                    type: string
+                    description: Razón social del cliente (opcional, máximo 100 caracteres).
+                    example: "Empresa XYZ S.A."
+                  estado:
+                    type: string
+                    description: Estado del cliente ("Activo" o "Inactivo").
+                    example: "Activo"
+                    enum:
+                      - Activo
+                      - Inactivo
+                  id_zona_de_trabajo:
+                    type: integer
+                    description: ID de la zona de trabajo asignada al cliente (opcional, entero positivo).
+                    example: 2
+        responses:
+          "200":
+            description: Cliente actualizado con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: "ok, Cliente actualizado con éxito"
+          "404":
+            description: Cliente no encontrado.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Cliente no encontrado."
+          "422":
+            description: Error de validación en los datos proporcionados.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          msg:
+                            type: string
+                            description: Descripción del error de validación.
+                          param:
+                            type: string
+                            description: Campo que contiene el error.
+                          location:
+                            type: string
+                            description: Ubicación del campo en el cuerpo, parámetros, etc.
+          "500":
+            description: Error interno del servidor.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Internal Server Error"
+                    details:
+                      type: string
+                      example: "Descripción detallada del error"
+  /get-product/{id_producto}:
+      get: 
+        summary: Obtener información de un producto
+        description: Obtiene información de un producto desde otro microservicio (ServidorB) a través de su `id_producto`.
+        parameters:
+          - name: id_producto
+            in: path
+            description: ID del producto a consultar
+            required: true
+            schema:
+              type: integer
+              minimum: 1
+            examples:
+              ejemploValido:
+                value: 123
+                description: Un ID válido para el producto
+        responses:
+          '200':
+            description: Producto encontrado exitosamente
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    mensaje:
+                      type: string
+                      example: Producto encontrado
+                    producto:
+                      type: object
+                      description: Información del producto obtenida desde el microservicio externo
+          '404':
+            description: Producto no encontrado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    mensaje:
+                      type: string
+                      example: Producto no encontrado en ServidorB
+          '500':
+            description: Error interno del servidor
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    mensaje:
+                      type: string
+                      example: Error al comunicarse con ServidorB
+        tags:
+          - Productos
+        externalDocs:
+          description: Documentación del microservicio externo (ServidorB)
+          url: http://localhost:10102/api-docs/
