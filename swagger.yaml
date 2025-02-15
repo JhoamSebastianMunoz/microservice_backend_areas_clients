@@ -4,6 +4,8 @@ info:
   version: "1.0.0"
   description: API para la gestión de zonas de trabajo y clientes
 servers:
+  - url: http://localhost:10101
+    description: Servidor local de desarrollo
   - url: https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net
     description: Servidor desplegado en Azure
 paths:
