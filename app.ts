@@ -49,7 +49,7 @@ app.use('/update-client', update_client);
 app.use('/get-product', get_product );
 
 // Configuración del puerto por donde correrá la aplicación
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10101;
 
 app.listen(PORT, () => {
   console.log("Servidor ejecutándose en el puerto: ", PORT);
