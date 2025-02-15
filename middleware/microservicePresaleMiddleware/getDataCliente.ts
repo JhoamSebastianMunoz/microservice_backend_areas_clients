@@ -2,7 +2,7 @@ import {check, validationResult} from  'express-validator';
 import {Request,Response, NextFunction} from 'express';
 
 let validatorParams =[
-    check('id_client').isLength({min:1}).withMessage('El id del producto debe contener mínimo 1 caracter').isNumeric().withMessage('Ingrese un número de id válido, en números').bail()
+    check('id_client').notEmpty().withMessage('El id del cliente es obligatorio').isLength({min:1}).withMessage('El id del cliente debe contener mínimo 1 caracter').isNumeric().withMessage('Ingrese un número de id válido, en números').bail()
 ];
 
 function validator(req:Request,res:Response,next:NextFunction){

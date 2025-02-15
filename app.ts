@@ -15,6 +15,10 @@ import get_clients from './routes/clientRoutes/get_clients';
 import get_client from './routes/clientRoutes/get_client';
 import delete_client from './routes/clientRoutes/delete_client';
 import update_client from './routes/clientRoutes/update_client';
+// importacion para asiganr zonas a un usuario
+import post_AreaUser from './routes/assignAreaUser/post_AreasUser';
+import get_areaUser from './routes/assignAreaUser/get_AreaByUser';
+import get_clientsAreaUser from './routes/assignAreaUser/get_ClientsByUser'
 // importacion para obtener la informacion del microservicio product
 import get_product from './routes/microserviceProductRoutes/get_product';
 // importacion para enviar la informacion del cliente al microservicio preventa
@@ -44,10 +48,16 @@ app.use('/get-clients', get_clients);
 app.use('/get-client', get_client);
 app.use('/delete-client', delete_client);
 app.use('/update-client', update_client);
+// Consulta para asignarle zonas a un usuario
+app.use('/post-AreaUser', post_AreaUser);
+// Obtener zonas de un usuario
+app.use('/get-AreaUser', get_areaUser);
+// Obtener clientes de una zonas asignada a un usuario
+app.use('/getClientsAreaUser', get_clientsAreaUser);
 // Consultar un producto de otro servicio por ID
 app.use('/get-product', get_product );
 // consultar datos cliente para el microservicio preventa
-app.use('/api/client', get_dataClient)
+app.use('/api/client', get_dataClient);
 
 // Configuración del puerto por donde correrá la aplicación
 const PORT = process.env.PORT || 3000;
