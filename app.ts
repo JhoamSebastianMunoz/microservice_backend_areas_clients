@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from 'body-parser';
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs"; 
+import cors from "cors";
 
 // importaciones de los servicios para zonas la cual esta relacionada con la tabla clientes
 import register_area from './routes/areaRoutes/register_area';
@@ -29,6 +30,8 @@ const swaggerDocument = YAML.load("./swagger.yaml");
 
 // Montar la documentación Swagger en la ruta `/api-docs`
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use(cors());
 
 // Sentencia CRUD para Zonas de trabajo
 app.use('/register-area', register_area);
