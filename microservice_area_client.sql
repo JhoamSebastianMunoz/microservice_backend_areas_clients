@@ -4,6 +4,7 @@ use microservice_area_client;
 
 drop table if exists zonas_de_trabajo;
 drop table if exists clientes;
+drop table if exists usuario_zona;
 
 create table zonas_de_trabajo(
 id_zona_de_trabajo int auto_increment primary key,
@@ -24,6 +25,14 @@ estado enum('Activo', 'Inactivo') not null default 'Activo',
 id_zona_de_trabajo int,
 foreign key (id_zona_de_trabajo) references zonas_de_trabajo(id_zona_de_trabajo)
 on delete set null on update cascade
+);
+
+CREATE TABLE usuario_zona (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_zona_de_trabajo INT NOT NULL,
+    FOREIGN KEY (id_zona_de_trabajo) REFERENCES zonas_de_trabajo(id_zona_de_trabajo) ON DELETE CASCADE,
+    UNIQUE (id_usuario, id_zona_de_trabajo) -- Evitar asignaciones duplicadas
 );
 
 select* from zonas_de_trabajo;
