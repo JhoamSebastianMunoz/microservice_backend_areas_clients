@@ -17,6 +17,8 @@ import delete_client from './routes/clientRoutes/delete_client';
 import update_client from './routes/clientRoutes/update_client';
 // importacion para obtener la informacion del microservicio product
 import get_product from './routes/microserviceProductRoutes/get_product';
+// importacion para enviar la informacion del cliente al microservicio preventa
+import get_dataClient from './routes/microservicePresaleRoutes/get_dataClien';
 
 import dotenv from "dotenv";
 
@@ -44,6 +46,8 @@ app.use('/delete-client', delete_client);
 app.use('/update-client', update_client);
 // Consultar un producto de otro servicio por ID
 app.use('/get-product', get_product );
+// consultar datos cliente para el microservicio preventa
+app.use('/api/client', get_dataClient)
 
 // Configuración del puerto por donde correrá la aplicación
 const PORT = process.env.PORT || 3000;
