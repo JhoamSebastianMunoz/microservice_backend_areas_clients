@@ -23,6 +23,10 @@ import get_clientsAreaUser from './routes/assignAreaUser/get_ClientsByUser'
 import get_product from './routes/microserviceProductRoutes/get_product';
 // importacion para enviar la informacion del cliente al microservicio preventa
 import get_dataClient from './routes/microservicePresaleRoutes/get_dataClien';
+// importacion para la gestion de solicitud de creacion de cliente
+import requestCreateClient from './routes/clientCreationRequestRoutes/clientCreationRequestRoutes';
+import getPendingRequest from './routes/clientCreationRequestRoutes/getPendingRequest';
+import acceptOrRejectRequest from './routes/clientCreationRequestRoutes/acceptOrRejectRoutes'
 
 import dotenv from "dotenv";
 
@@ -48,6 +52,10 @@ app.use('/get-clients', get_clients);
 app.use('/get-client', get_client);
 app.use('/delete-client', delete_client);
 app.use('/update-client', update_client);
+// Solicitud creación y aceptar cliente
+app.use('/request-create-cliente', requestCreateClient);
+app.use('/get-Pending-Request', getPendingRequest);
+app.use('/accept-Reject-Request', acceptOrRejectRequest)
 // Consulta para asignarle zonas a un usuario
 app.use('/post-AreaUser', post_AreaUser);
 // Obtener zonas de un usuario
