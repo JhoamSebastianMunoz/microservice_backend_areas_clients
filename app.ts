@@ -69,9 +69,9 @@ app.use('/get-AreaUser', get_areaUser);
 // Obtener clientes de una zonas asignada a un usuario
 app.use('/getClientsAreaUser', get_clientsAreaUser);
 // Consultar un producto de otro servicio por ID
-app.use('/get-product', get_product );
+app.use('/get-product', get_product);
 // consultar datos cliente para el microservicio preventa
-app.use('https://backendproducts-eefufaaeaahzauee.eastus-01.azurewebsites.net/client', get_dataClient);
+app.use('/client', get_dataClient);
 
 // Configuración del puerto por donde correrá la aplicación
 const PORT = process.env.PORT || 10101;
