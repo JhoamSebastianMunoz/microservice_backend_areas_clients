@@ -44,7 +44,12 @@ app.get('/', (req, res) => {
 // Montar la documentación Swagger en la ruta `/api-docs`
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use(cors());
+app.use(cors({
+  origin: '*', // Temporal para debugging
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 // Sentencia CRUD para Zonas de trabajo
 app.use('/register-area', register_area);
