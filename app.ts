@@ -37,7 +37,10 @@ const app = express().use(bodyParser.json());
 
 // Cargar archivo YAML de Swagger
 const swaggerDocument = YAML.load("./swagger.yaml");
-
+// verificar si el servidor esta funcionando
+app.get('/', (req, res) => {
+  res.send('Servidor funcionando correctamente');
+});
 // Montar la documentación Swagger en la ruta `/api-docs`
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -68,7 +71,7 @@ app.use('/getClientsAreaUser', get_clientsAreaUser);
 // Consultar un producto de otro servicio por ID
 app.use('/get-product', get_product );
 // consultar datos cliente para el microservicio preventa
-app.use('/api/client', get_dataClient);
+app.use('https://backendproducts-eefufaaeaahzauee.eastus-01.azurewebsites.net/client', get_dataClient);
 
 // Configuración del puerto por donde correrá la aplicación
 const PORT = process.env.PORT || 10101;
