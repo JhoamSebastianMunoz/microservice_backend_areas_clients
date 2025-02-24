@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import Asignarzonas_usuarioService from "../../services/Assign_AreaUserService";
+import dotenv from "dotenv";
+dotenv.config();
 import axios from "axios";
 
 const get_areasByUser = async (req: Request, res: Response) => {
@@ -12,7 +14,7 @@ const get_areasByUser = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Debes proporcionar un id_usuario." });
         }
 
-        const responseUser = await axios.get(`https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net/api/usuarios/id_usuario/${id_usuario}`)
+        const responseUser = await axios.get(`${process.env.AZURE_USER_URL}/api/usuarios/id_usuario/${id_usuario}`)
             console.log('RESPUESUSUARIO.DATAA:', responseUser.data);
             console.log('NOMBREEE:', responseUser.data.nombreCompleto);
             console.log('NOMBREEE:', responseUser.data.rol);

@@ -1,11 +1,13 @@
 import axios from "axios";
 import assign_AreaUserRepository from "../repositories/AssingAreaUserRepository";
+import dotenv from "dotenv";
+dotenv.config();
 
 class assign_AreaUserService{
     static async assignAreaUser(id_usuario: number, zonas: number[]) {
         // Validar si el usuario existe en el microservicio de Usuarios
         try {
-            let responserUser = await axios.get(`https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net/api/usuarios/id_usuario/${id_usuario}`);
+            let responserUser = await axios.get(`${process.env.AZURE_USER_URL}/api/usuarios/id_usuario/${id_usuario}`);
             if (!responserUser.data) {
                 throw new Error(`Usuario con ID ${id_usuario} no encontrado.`);
             }

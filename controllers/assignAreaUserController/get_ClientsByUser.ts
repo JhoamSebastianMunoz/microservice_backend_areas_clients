@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import assign_AreaUserService from '../../services/Assign_AreaUserService';
+import dotenv from "dotenv";
+dotenv.config();
 import axios from "axios";
 
 const get_ClientsByUser = async (req: Request, res: Response) => {
@@ -13,7 +15,7 @@ const get_ClientsByUser = async (req: Request, res: Response) => {
         const clientes = await assign_AreaUserService.getClientsByUser(Number(id_usuario), Number(id_zona));
         console.log('CLIENTESSS:', clientes);
         
-        const responsUser = await axios.get(`https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net/api/usuarios/id_usuario/${id_usuario}`)
+        const responsUser = await axios.get(`${process.env.AZURE_USER_URL}/api/usuarios/id_usuario/${id_usuario}`)
 
         return res.status(200).json({
             nombreUsuario: responsUser.data,

@@ -6,11 +6,11 @@ dotenv.config();
 let get_product = async (req: Request, res: Response) => {  
     const { id_producto } = req.params;
     try {
-        const productUrl = process.env.AZURE_PRODUCTS_URL;
-        console.log('URL de solicitud:', `${productUrl}/get-product/${id_producto}`);
+        
+        console.log('URL de solicitud:', `${process.env.AZURE_PRODUCTS_URL}/get-product/${id_producto}`);
     
         try {
-          const respuesta = await axios.get(`${productUrl}/get-product/${id_producto}`, {
+          const respuesta = await axios.get(`${process.env.AZURE_PRODUCTS_URL}/get-product/${id_producto}`, {
             timeout: 10000, // Aumentar tiempo de espera a 10 segundos
             headers: {
               'Accept': 'application/json'
