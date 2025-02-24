@@ -12,7 +12,7 @@ const get_areasByUser = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Debes proporcionar un id_usuario." });
         }
 
-        const responseUser = await axios.get(`http://localhost:10101/api/usuarios/id_usuario/${id_usuario}`)
+        const responseUser = await axios.get(`https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net/api/usuarios/id_usuario/${id_usuario}`)
             console.log('RESPUESUSUARIO.DATAA:', responseUser.data);
             console.log('NOMBREEE:', responseUser.data.nombreCompleto);
             console.log('NOMBREEE:', responseUser.data.rol);

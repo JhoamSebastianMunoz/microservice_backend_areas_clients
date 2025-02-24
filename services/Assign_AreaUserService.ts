@@ -5,7 +5,7 @@ class assign_AreaUserService{
     static async assignAreaUser(id_usuario: number, zonas: number[]) {
         // Validar si el usuario existe en el microservicio de Usuarios
         try {
-            let responserUser = await axios.get(`http://localhost:10101/api/usuarios/id_usuario/${id_usuario}`);
+            let responserUser = await axios.get(`https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net/api/usuarios/id_usuario/${id_usuario}`);
             if (!responserUser.data) {
                 throw new Error(`Usuario con ID ${id_usuario} no encontrado.`);
             }
