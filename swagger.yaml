@@ -329,25 +329,133 @@ paths:
 
   /request-create-cliente:
     post:
-      security:
-        - bearerAuth: []
       tags:
         - Solicitudes de Creación
-      summary: Solicitar creación de cliente
-      description: Crear una solicitud para registrar un nuevo cliente
+      summary: Solicitud de creación de un nuevo cliente
+      description: Permite a un colaborador enviar una solicitud para crear un nuevo cliente. La solicitud quedará pendiente de aprobación.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              type: object
+              required:
+                - cedula
+                - nombre_completo_cliente
+                - direccion
+                - telefono
+              properties:
+                cedula:
+                  type: string
+                  minLength: 6
+                  maxLength: 15
+                  description: Número de identificación del cliente (cédula). Debe contener solo números.
+                  example: "1234567890"
+                nombre_completo_cliente:
+                  type: string
+                  minLength: 6
+                  maxLength: 200
+                  description: Nombre completo del cliente.
+                  example: "Juan Pérez González"
+                direccion:
+                  type: string
+                  minLength: 5
+                  maxLength: 255
+                  description: Dirección física del cliente.
+                  example: "Calle Principal #123, Ciudad"
+                telefono:
+                  type: string
+                  minLength: 8
+                  maxLength: 15
+                  description: Número de teléfono del cliente, solo dígitos.
+                  example: "3001234567"
+                rut_nit:
+                  type: string
+                  maxLength: 30
+                  description: Número de identificación tributaria del cliente (opcional).
+                  example: "900123456-7"
+                razon_social:
+                  type: string
+                  maxLength: 100
+                  description: Razón social para clientes empresariales (opcional).
+                  example: "Empresa XYZ S.A.S."
+                id_zona_de_trabajo:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  description: ID de la zona de trabajo a la que pertenece el cliente (opcional).
+                  example: 5
       responses:
         '201':
-          description: Solicitud creada exitosamente
+          description: Cliente registrado con éxito (pendiente de aprobación)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Cliente registrado con éxito"
+        '401':
+          description: No autorizado - Token no proporcionado o inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "token inválido o expirado"
+        '403':
+          description: Prohibido - El usuario no tiene permisos para realizar esta acción
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No tienes permisos para realizar esta acción"
         '422':
-          description: Error de validación
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        msg:
+                          type: string
+                        path:
+                          type: string
+                        location:
+                          type: string
         '500':
           description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      errorInfo:
+                        type: string
+                        example: "Duplicate entry '1234567890' for key 'cedula'"
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Internal Server Error"
+                      details:
+                        type: string
 
   /get-Pending-Request:
     get:
