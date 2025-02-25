@@ -459,19 +459,101 @@ paths:
 
   /get-Pending-Request:
     get:
+      tags:
+        - Clientes
+      summary: Obtener solicitudes de creación de clientes pendientes
+      description: Permite a un administrador obtener todas las solicitudes de creación de clientes que están en estado pendiente.
       security:
         - bearerAuth: []
-      tags:
-        - Solicitudes de Creación
-      summary: Obtener solicitudes pendientes
-      description: Retorna la lista de solicitudes de creación de clientes pendientes
       responses:
         '200':
-          description: Lista de solicitudes obtenida exitosamente
+          description: Lista de solicitudes pendientes obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id_cliente:
+                      type: integer
+                      description: Identificador único del cliente
+                      example: 1
+                    cedula:
+                      type: string
+                      description: Número de identificación del cliente
+                      example: "1234567890"
+                    nombre_completo_cliente:
+                      type: string
+                      description: Nombre completo del cliente
+                      example: "Juan Pérez González"
+                    direccion:
+                      type: string
+                      description: Dirección física del cliente
+                      example: "Calle Principal #123, Ciudad"
+                    telefono:
+                      type: string
+                      description: Número de teléfono del cliente
+                      example: "3001234567"
+                    rut_nit:
+                      type: string
+                      description: Número de identificación tributaria del cliente
+                      example: "900123456-7"
+                    razon_social:
+                      type: string
+                      description: Razón social para clientes empresariales
+                      example: "Empresa XYZ S.A.S."
+                    estado:
+                      type: string
+                      description: Estado de la solicitud (siempre "Pendiente" en esta ruta)
+                      example: "Pendiente"
+                    id_zona_de_trabajo:
+                      type: string
+                      description: ID de la zona de trabajo a la que pertenece el cliente
+                      example: "5"
+        '401':
+          description: No autorizado - Token no proporcionado o inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "token inválido o expirado"
+        '403':
+          description: Prohibido - El usuario no tiene permisos para realizar esta acción
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No tienes permisos para realizar esta acción"
         '404':
           description: No hay solicitudes pendientes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No hay solicitudes pendientes"
         '500':
           description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+                  details:
+                    type: string
+                    example: "Error message details"
 
   /accept-Reject-Request/{id_client}:
     put:
@@ -498,61 +580,228 @@ paths:
 
   /post-AreaUser/{id_usuario}:
     post:
-      security:
-        - bearerAuth: []
       tags:
         - Asignación de Áreas
-      summary: Asignar áreas a usuario
-      description: Asignar una o más áreas de trabajo a un usuario
+      summary: Asignar zonas de trabajo a un usuario
+      description: Permite a un administrador asignar múltiples zonas de trabajo a un colaborador específico. Primero valida que el usuario exista y no sea administrador, y luego verifica que todas las zonas especificadas existan antes de realizar la asignación.
+      security:
+        - bearerAuth: []
       parameters:
         - name: id_usuario
           in: path
           required: true
-          description: ID del usuario
+          description: Identificador único del usuario al que se le asignarán las zonas
           schema:
             type: integer
+            format: int64
+            minimum: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - zonas
               properties:
                 zonas:
                   type: array
+                  description: Lista de identificadores de zonas a asignar al usuario
+                  minItems: 1
                   items:
                     type: integer
-                  description: Lista de IDs de áreas a asignar
+                    format: int32
+                    minimum: 1
+                  example: [1, 2, 3]
       responses:
         '200':
-          description: Áreas asignadas exitosamente
+          description: Zonas asignadas con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Zonas asignadas correctamente"
         '400':
-          description: Datos de entrada inválidos
+          description: Solicitud incorrecta - Parámetros faltantes o inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Debes proporcionar un id_usuario y una lista de id_zona."
+        '401':
+          description: No autorizado - Token no proporcionado o inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "token inválido o expirado"
+        '403':
+          description: Prohibido - El usuario no tiene permisos para realizar esta acción
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No tienes permisos para realizar esta acción"
+        '422':
+          description: Error de validación en los parámetros proporcionados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        msg:
+                          type: string
+                          example: "Debe enviar al menos una zona en la lista"
+                        path:
+                          type: string
+                          example: "zonas"
+                        location:
+                          type: string
+                          example: "body"
         '500':
           description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Error interno del servidor"
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Usuario con ID 123 no encontrado."
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Usuario con ID 123 no es colaborador."
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Zona con ID 456 no encontrada."
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Error consultando el microservicio de usuarios."
 
   /get-AreaUser/{id_usuario}:
     get:
-      security:
-        - bearerAuth: []
       tags:
         - Asignación de Áreas
-      summary: Obtener áreas de usuario
-      description: Obtener las áreas asignadas a un usuario
+      summary: Obtener zonas de trabajo asignadas a un usuario
+      description: Permite obtener las zonas de trabajo asignadas a un usuario específico. Si el usuario que realiza la petición es un COLABORADOR, solo podrá consultar sus propias zonas asignadas. Si es un ADMINISTRADOR, podrá consultar las zonas de cualquier usuario.
+      security:
+        - bearerAuth: []
       parameters:
         - name: id_usuario
           in: path
           required: true
-          description: ID del usuario
+          description: Identificador único del usuario del que se quieren obtener las zonas asignadas
           schema:
             type: integer
+            format: int64
+            minimum: 1
       responses:
         '200':
-          description: Áreas obtenidas exitosamente
+          description: Zonas asignadas al usuario obtenidas con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nobreUsuario:
+                    type: string
+                    description: Nombre completo del usuario consultado
+                    example: "Juan Pérez González"
+                  zonas:
+                    type: array
+                    description: Lista de zonas asignadas al usuario
+                    items:
+                      type: object
+                      properties:
+                        id_zona_de_trabajo:
+                          type: integer
+                          description: Identificador único de la zona de trabajo
+                          example: 1
+                        nombre_zona_trabajo:
+                          type: string
+                          description: Nombre descriptivo de la zona de trabajo
+                          example: "Zona Norte"
+        '400':
+          description: Solicitud incorrecta - Parámetros faltantes o inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Debes proporcionar un id_usuario."
+        '401':
+          description: No autorizado - Token no proporcionado o inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "token inválido o expirado"
+        '403':
+          description: Prohibido - El usuario no tiene permisos para realizar esta acción
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No tienes permisos para realizar esta acción"
         '404':
-          description: Usuario no encontrado o sin áreas asignadas
+          description: No se encontraron zonas asignadas para el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Zona no encontrada o no asignada para el usuario Juan Pérez González"
         '500':
           description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error interno del servidor"
 
   /getClientsAreaUser/{id_usuario}/{id_zona}:
     get:
@@ -582,3 +831,200 @@ paths:
           description: No se encontraron clientes
         '500':
           description: Error interno del servidor
+
+  /get-product/{id_producto}:
+    get:
+      tags:
+        - Consultar un producto de otro microservicio por ID
+      summary: Obtener información de un producto
+      description: Consulta la información de un producto específico mediante un microservicio externo de productos.
+      parameters:
+        - name: id_producto
+          in: path
+          required: true
+          description: Identificador único del producto a consultar
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Producto encontrado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Producto encontrado"
+                  producto:
+                    type: object
+                    description: Información del producto obtenida del microservicio externo
+        '422':
+          description: Error de validación en los parámetros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        msg:
+                          type: string
+                          example: "El id del producto debe contener mínimo 1 caracter"
+                        path:
+                          type: string
+                          example: "id_producto"
+                        location:
+                          type: string
+                          example: "params"
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Error en el servidor remoto"
+                  detalle:
+                    type: object
+                    description: Detalles del error proporcionados por el microservicio
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      mensaje:
+                        type: string
+                        example: "Error de configuración"
+                      detalle:
+                        type: string
+                  - type: object
+                    properties:
+                      mensaje:
+                        type: string
+                        example: "Error desconocido"
+                      detalle:
+                        type: string
+                        example: "Ocurrió un error inesperado"
+                  - type: object
+                    properties:
+                      mensaje:
+                        type: string
+                        example: "Error al comunicarse con el servicio"
+                      detalle:
+                        type: string
+        '503':
+          description: Servicio no disponible
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "No se pudo conectar con el servicio"
+                  detalle:
+                    type: string
+                    example: "Sin respuesta del servidor"
+  
+  /client/{id_client}:
+    get:
+      tags:
+        - Microservicio Preventa
+      summary: Obtener datos de un cliente para el microservicio de preventa
+      description: Consulta la información de un cliente específico y su zona de trabajo para ser utilizada por el microservicio de preventa.
+      parameters:
+        - name: id_client
+          in: path
+          required: true
+          description: Identificador único del cliente a consultar
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Datos del cliente obtenidos con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  razon_social:
+                    type: string
+                    description: Razón social del cliente (para empresas)
+                    example: "Empresa XYZ S.A.S."
+                  nombre_completo_cliente:
+                    type: string
+                    description: Nombre completo del cliente
+                    example: "Juan Pérez González"
+                  direccion:
+                    type: string
+                    description: Dirección física del cliente
+                    example: "Calle Principal #123, Ciudad"
+                  telefono:
+                    type: string
+                    description: Número de teléfono del cliente
+                    example: "3001234567"
+                  zona:
+                    type: string
+                    description: Nombre de la zona de trabajo asignada al cliente
+                    example: "Zona Norte"
+        '404':
+          description: Cliente no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Cliente con ID 123 no encontrado"
+        '422':
+          description: Error de validación en los parámetros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        msg:
+                          type: string
+                          example: "El id del cliente es obligatorio"
+                        path:
+                          type: string
+                          example: "id_client"
+                        location:
+                          type: string
+                          example: "params"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+                  details:
+                    type: string
+                    description: Detalles del error

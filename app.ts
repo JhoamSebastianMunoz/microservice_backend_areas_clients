@@ -73,7 +73,7 @@ app.use('/post-AreaUser', post_AreaUser);
 app.use('/get-AreaUser', get_areaUser);
 // Obtener clientes de una zonas asignada a un usuario
 app.use('/getClientsAreaUser', get_clientsAreaUser);
-// Consultar un producto de otro servicio por ID
+// Consultar un producto de otro microservicio por ID
 app.use('/get-product', get_product);
 // consultar datos cliente para el microservicio preventa
 app.use('/client', get_dataClient);
