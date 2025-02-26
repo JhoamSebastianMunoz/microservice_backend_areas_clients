@@ -16,6 +16,8 @@ class AreaRepository {
         return rows as GetArea[];
     }
     static async get(getArea : GetArea){
+        console.log('ENTRO LA AREAREPOSITORY');
+        
         const sql = 'SELECT * FROM  zonas_de_trabajo WHERE id_zona_de_trabajo= ?';
         const values = [getArea.id_zona_de_trabajo]; 
         const [rows] = await db.execute(sql, values);      
