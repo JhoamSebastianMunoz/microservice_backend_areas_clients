@@ -17,9 +17,7 @@ import get_client from './routes/clientRoutes/get_client';
 import delete_client from './routes/clientRoutes/delete_client';
 import update_client from './routes/clientRoutes/update_client';
 // importacion para asiganr zonas a un usuario
-import post_AreaUser from './routes/assignAreaUser/post_AreasUser';
-import get_areaUser from './routes/assignAreaUser/get_AreaByUser';
-import get_clientsAreaUser from './routes/assignAreaUser/get_ClientsByUser'
+import get_dataArea from './routes/MicroserviceUser/get_dataArea';
 // importacion para obtener la informacion del microservicio product
 import get_product from './routes/microserviceProductRoutes/get_product';
 // importacion para enviar la informacion del cliente al microservicio preventa
@@ -67,12 +65,8 @@ app.use('/update-client', update_client);
 app.use('/request-create-cliente', requestCreateClient);
 app.use('/get-Pending-Request', getPendingRequest);
 app.use('/accept-Reject-Request', acceptOrRejectRequest)
-// Consulta para asignarle zonas a un usuario
-app.use('/post-AreaUser', post_AreaUser);
-// Obtener zonas de un usuario
-app.use('/get-AreaUser', get_areaUser);
-// Obtener clientes de una zonas asignada a un usuario
-app.use('/getClientsAreaUser', get_clientsAreaUser);
+// Consulta para el microservicio usuarios
+app.use('/get_dataArea', get_dataArea);
 // Consultar un producto de otro microservicio por ID
 app.use('/get-product', get_product);
 // consultar datos cliente para el microservicio preventa
