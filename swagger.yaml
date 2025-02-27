@@ -578,182 +578,36 @@ paths:
         '500':
           description: Error interno del servidor
 
-  /post-AreaUser/{id_usuario}:
-    post:
-      tags:
-        - Asignación de Áreas
-      summary: Asignar zonas de trabajo a un usuario
-      description: Permite a un administrador asignar múltiples zonas de trabajo a un colaborador específico. Primero valida que el usuario exista y no sea administrador, y luego verifica que todas las zonas especificadas existan antes de realizar la asignación.
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id_usuario
-          in: path
-          required: true
-          description: Identificador único del usuario al que se le asignarán las zonas
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - zonas
-              properties:
-                zonas:
-                  type: array
-                  description: Lista de identificadores de zonas a asignar al usuario
-                  minItems: 1
-                  items:
-                    type: integer
-                    format: int32
-                    minimum: 1
-                  example: [1, 2, 3]
-      responses:
-        '200':
-          description: Zonas asignadas con éxito
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Zonas asignadas correctamente"
-        '400':
-          description: Solicitud incorrecta - Parámetros faltantes o inválidos
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Debes proporcionar un id_usuario y una lista de id_zona."
-        '401':
-          description: No autorizado - Token no proporcionado o inválido
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "token inválido o expirado"
-        '403':
-          description: Prohibido - El usuario no tiene permisos para realizar esta acción
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "No tienes permisos para realizar esta acción"
-        '422':
-          description: Error de validación en los parámetros proporcionados
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        msg:
-                          type: string
-                          example: "Debe enviar al menos una zona en la lista"
-                        path:
-                          type: string
-                          example: "zonas"
-                        location:
-                          type: string
-                          example: "body"
-        '500':
-          description: Error interno del servidor
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      error:
-                        type: string
-                        example: "Error interno del servidor"
-                  - type: object
-                    properties:
-                      error:
-                        type: string
-                        example: "Usuario con ID 123 no encontrado."
-                  - type: object
-                    properties:
-                      error:
-                        type: string
-                        example: "Usuario con ID 123 no es colaborador."
-                  - type: object
-                    properties:
-                      error:
-                        type: string
-                        example: "Zona con ID 456 no encontrada."
-                  - type: object
-                    properties:
-                      error:
-                        type: string
-                        example: "Error consultando el microservicio de usuarios."
-
-  /get-AreaUser/{id_usuario}:
+  /get_dataArea/{id_area}:
     get:
-      tags:
-        - Asignación de Áreas
-      summary: Obtener zonas de trabajo asignadas a un usuario
-      description: Permite obtener las zonas de trabajo asignadas a un usuario específico. Si el usuario que realiza la petición es un COLABORADOR, solo podrá consultar sus propias zonas asignadas. Si es un ADMINISTRADOR, podrá consultar las zonas de cualquier usuario.
-      security:
-        - bearerAuth: []
+      summary: Obtener información de una zona de trabajo por ID
+      description: Retorna los detalles de una zona de trabajo específica basada en el ID proporcionado.
       parameters:
-        - name: id_usuario
+        - name: id_area
           in: path
           required: true
-          description: Identificador único del usuario del que se quieren obtener las zonas asignadas
+          description: ID de la zona de trabajo a consultar
           schema:
             type: integer
-            format: int64
-            minimum: 1
       responses:
-        '200':
-          description: Zonas asignadas al usuario obtenidas con éxito
+        200:
+          description: Zona de trabajo encontrada
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  nobreUsuario:
+                  id_zona_de_trabajo:
+                    type: integer
+                    example: 1
+                  nombre:
                     type: string
-                    description: Nombre completo del usuario consultado
-                    example: "Juan Pérez González"
-                  zonas:
-                    type: array
-                    description: Lista de zonas asignadas al usuario
-                    items:
-                      type: object
-                      properties:
-                        id_zona_de_trabajo:
-                          type: integer
-                          description: Identificador único de la zona de trabajo
-                          example: 1
-                        nombre_zona_trabajo:
-                          type: string
-                          description: Nombre descriptivo de la zona de trabajo
-                          example: "Zona Norte"
-        '400':
-          description: Solicitud incorrecta - Parámetros faltantes o inválidos
+                    example: "Zona Norte"
+                  descripcion:
+                    type: string
+                    example: "Zona asignada para ventas en el sector norte"
+        404:
+          description: Zona de trabajo no encontrada
           content:
             application/json:
               schema:
@@ -761,38 +615,8 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "Debes proporcionar un id_usuario."
-        '401':
-          description: No autorizado - Token no proporcionado o inválido
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "token inválido o expirado"
-        '403':
-          description: Prohibido - El usuario no tiene permisos para realizar esta acción
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "No tienes permisos para realizar esta acción"
-        '404':
-          description: No se encontraron zonas asignadas para el usuario
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Zona no encontrada o no asignada para el usuario Juan Pérez González"
-        '500':
+                    example: "Zona no encontrada"
+        500:
           description: Error interno del servidor
           content:
             application/json:
@@ -803,35 +627,6 @@ paths:
                     type: string
                     example: "Error interno del servidor"
 
-  /getClientsAreaUser/{id_usuario}/{id_zona}:
-    get:
-      security:
-        - bearerAuth: []
-      tags:
-        - Asignación de Áreas
-      summary: Obtener clientes de área asignada
-      description: Obtener los clientes de un área asignada a un usuario
-      parameters:
-        - name: id_usuario
-          in: path
-          required: true
-          description: ID del usuario
-          schema:
-            type: integer
-        - name: id_zona
-          in: path
-          required: true
-          description: ID del área
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Clientes obtenidos exitosamente
-        '404':
-          description: No se encontraron clientes
-        '500':
-          description: Error interno del servidor
-  
   /client/{id_client}:
     get:
       tags:
