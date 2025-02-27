@@ -9,3 +9,4 @@ router.get('/', verifyToken, checkRoleAndPermission(["ADMINISTRADOR"]), getAreas
 
 
 export default router;
+

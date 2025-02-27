@@ -1,13 +1,19 @@
 import axios from "axios";
 import assign_AreaUserRepository from "../repositories/AssingAreaUserRepository";
 import dotenv from "dotenv";
+import GetArea from "../Dto/GetAreaDto";
+import AreaRepository from "../repositories/AreaRepository";
 dotenv.config();
 
 class assign_AreaUserService{
-    static async assignAreaUser(id_usuario: number, zonas: number[]) {
+    static async assignAreaUser(id_usuario: number, zonas: GetArea[]) {
         // Validar si el usuario existe en el microservicio de Usuarios
+        console.log('ENTRO A ASSIGNAREAUSER');
+        
         try {
-            let responserUser = await axios.get(`${process.env.AZURE_USER_URL}/api/usuarios/id_usuario/${id_usuario}`);
+            let responserUser = await axios.get(`https://tatsoftgestionusuarios-hufsaqe0emc6gsf4.eastus-01.azurewebsites.net/api/usuarios/id_usuario/${id_usuario}`);
+            console.log('USERRESPONSE: ', responserUser.data);
+            
             if (!responserUser.data) {
                 throw new Error(`Usuario con ID ${id_usuario} no encontrado.`);
             }
@@ -25,7 +31,10 @@ class assign_AreaUserService{
     
         // Validar si todas las zonas existen
         for (const id_zona of zonas) {
-            const zonaExiste = await assign_AreaUserRepository.getAreaById(id_zona);
+            console.log('ENTRO AL FOR');
+            const zonaExiste = await AreaRepository.get(id_zona);
+            console.log('CONSULTO ZONAS EXISTENTES:', zonaExiste);
+            
             if (!zonaExiste) throw new Error(`Zona con ID ${id_zona} no encontrada.`);
         }
     

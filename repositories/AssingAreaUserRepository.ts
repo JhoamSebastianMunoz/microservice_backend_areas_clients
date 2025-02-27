@@ -1,17 +1,24 @@
 import db from '../config/config-db';
+import GetArea from '../Dto/GetAreaDto';
 
 class assign_AreaUserRepository{
-    static async postAreaUser(id_usuario: number, zonas: number[]) {
+    static async postAreaUser(id_usuario: number, zonas: GetArea[]) {
         const values = zonas.map(id_zona => `(${id_usuario}, ${id_zona})`).join(",");
+        console.log('VALORES DATABASE: ', id_usuario, zonas );
+        
         const query = `INSERT IGNORE INTO usuario_zona (id_usuario, id_zona_de_trabajo) VALUES ${values}`;
         return await db.execute(query);
     }
 
-    static async getAreaById(id_zona: number){
+    static async getAreaById(id_zona: GetArea){
+        console.log('VALORES AREA BY ID: ', id_zona);
+        
         const [result]: any = await db.execute(
             "SELECT * FROM zonas_de_trabajo WHERE id_zona_de_trabajo = ?",
             [id_zona]
         );
+        console.log('RESULTA GETAREABYID: ', result);
+        
         return result.length > 0 ? result[0] : null;
     }
 

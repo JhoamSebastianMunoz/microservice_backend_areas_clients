@@ -80,7 +80,7 @@ app.use('/getClientsAreaUser', get_clientsAreaUser);
 app.use('/client', get_dataClient);
 
 // Configuración del puerto por donde correrá la aplicación
-const PORT = process.env.PORT || 10101;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log("Servidor ejecutándose en el puerto: ", PORT);

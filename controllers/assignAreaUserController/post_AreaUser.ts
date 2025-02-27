@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import assign_AreaUserService from "../../services/Assign_AreaUserService";
+import GetArea from "../../Dto/GetAreaDto";
 
 let assign_AreaUser = async(req:Request, res:Response) => {
     try {
@@ -11,7 +12,7 @@ let assign_AreaUser = async(req:Request, res:Response) => {
         }
 
 
-        const resultado = await assign_AreaUserService.assignAreaUser(Number(id_usuario), zonas);
+        await assign_AreaUserService.assignAreaUser(Number(id_usuario), zonas as GetArea[]);
         
         return res.status(200).json({ message: "Zonas asignadas correctamente"});
     } catch (error: any) {
