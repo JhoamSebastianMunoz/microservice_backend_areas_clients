@@ -581,7 +581,7 @@ paths:
   /get_dataArea/{id_area}:
     get:
       tags:
-        - Solicitudes de otro Microservicio
+        - Solicitudes para otro Microservicio
       summary: Obtener información de una zona de trabajo por ID
       description: Retorna los detalles de una zona de trabajo específica basada en el ID proporcionado.
       parameters:
@@ -628,6 +628,63 @@ paths:
                   error:
                     type: string
                     example: "Error interno del servidor"
+  
+  /get_clientArea/{id_area}:
+    get:
+      tags:
+        - Solicitudes para otro Microservicio
+      summary: Obtener clientes por zona de trabajo
+      description: Retorna una lista de clientes asociados a una zona de trabajo específica.
+      parameters:
+        - name: id_area
+          in: path
+          required: true
+          description: ID de la zona de trabajo para la cual se desea obtener la lista de clientes.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista de clientes en la zona de trabajo especificada.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id_cliente:
+                      type: integer
+                      description: ID del cliente.
+                    nombre:
+                      type: string
+                      description: Nombre del cliente.
+                    email:
+                      type: string
+                      format: email
+                      description: Correo electrónico del cliente.
+                    telefono:
+                      type: string
+                      description: Número de teléfono del cliente.
+        "404":
+          description: No hay clientes en la zona especificada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No hay clientes en esta zona
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error interno del servidor
 
   /client/{id_client}:
     get:
