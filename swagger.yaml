@@ -580,6 +580,8 @@ paths:
 
   /get_dataArea/{id_area}:
     get:
+      tags:
+        - Solicitudes de otro Microservicio
       summary: Obtener información de una zona de trabajo por ID
       description: Retorna los detalles de una zona de trabajo específica basada en el ID proporcionado.
       parameters:
