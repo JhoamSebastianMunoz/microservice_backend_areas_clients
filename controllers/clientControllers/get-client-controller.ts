@@ -6,10 +6,10 @@ let get_client = async (req: Request, res: Response) => {
     try {
         const { id_cliente } = req.params;
         const result = await ClientService.getClient(new GetClient (id_cliente))
-        if(!result) {
+        if(result.length === 0) {
             return res.status(404).json({message: 'Cliente no encontrado'})
         }else{
-            return res.status(201).json(result);
+            return res.status(200).json(result);
         }
         
         } catch (error: any) {    

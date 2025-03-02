@@ -6,7 +6,7 @@ let get_area = async (req: Request, res: Response) => {
     try {
         const { id_zona_de_trabajo } = req.params;
         const result = await AreaService.getArea(new GetArea (id_zona_de_trabajo))
-        if(!result) {
+        if(result.length === 0) {
             return res.status(404).json({message: 'Zona de trabajo no encontrada'})
         }else{
             return res.status(201).json(result);

@@ -19,18 +19,19 @@ class AreaRepository {
         const sql = 'SELECT * FROM  zonas_de_trabajo WHERE id_zona_de_trabajo= ?';
         const values = [getArea.id_zona_de_trabajo]; 
         const [rows] = await db.execute(sql, values);      
-        return [rows]
+        return rows as GetArea[];
     }
     static async delete(deleteArea : DeleteArea){
         const sql = 'DELETE FROM zonas_de_trabajo WHERE id_zona_de_trabajo = ?';
         const values = [deleteArea.id_zona_de_trabajo];
         const [result]: any = await db.execute(sql, values);
-    return result.affectedRows; // Devuelve el número de filas afectadas.
+        return result.affectedRows; // Devuelve el número de filas afectadas.
     }
     static async update(updateArea : UpdateArea ){
         const sql = 'UPDATE zonas_de_trabajo SET nombre_zona_trabajo = ?, descripcion = ? WHERE id_zona_de_trabajo = ?';
         const values = [updateArea.nombre_zona_trabajo, updateArea.descripcion, updateArea.id_zona_de_trabajo]
-        return db.execute(sql,values);
+        const [result]: any = await db.execute(sql,values);
+        return result;
     }
 };
 

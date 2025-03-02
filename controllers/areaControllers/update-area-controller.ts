@@ -11,13 +11,13 @@ let update_area = async(req:Request, res:Response)=>{
             } = req.body;
         
         const result = await AreaService.updateArea(new UpdateArea(id_zona_de_trabajo, nombre_zona_trabajo, descripcion));
-            if(!result){
+            if(!result || result.affectedRows === 0){
                 return res.status(404).json({ error: "Zona de trabajo no encontrado." });
             }
-            else{ return res.status(200).json(
+            return res.status(200).json(
                 {status:'ok, Zona de trabajo actualizado con éxito'}
             ); 
-            }
+            
         }catch(error:any){
             if(error && error.code == "ER_DUP_ENTRY"){
                 return res.status(500).json({errorInfo: error.sqlMessage})

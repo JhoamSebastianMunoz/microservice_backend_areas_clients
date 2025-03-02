@@ -19,7 +19,7 @@ class ClientRepository {
         const sql = 'SELECT * FROM clientes WHERE id_cliente= ?';
         const values = [getClient.id_cliente]; 
         const [rows] = await db.execute(sql, values);      
-        return [rows]
+        return rows as GetClient[];
     }
     static async delete(deleteClient : DeleteClient){
         const sql = 'DELETE FROM clientes WHERE id_cliente = ?';
@@ -30,7 +30,8 @@ class ClientRepository {
     static async update(updateClient : UpdateClient){
         const sql = 'UPDATE clientes SET cedula = ?, nombre_completo_cliente = ?, direccion = ?, telefono =  ?, rut_nit = ?, razon_social = ?, estado = ?, id_zona_de_trabajo = ? WHERE id_cliente = ?';
         const values = [ updateClient.cedula, updateClient.nombre_completo_cliente, updateClient.direccion, updateClient.telefono, updateClient.rut_nit, updateClient.razon_social, updateClient.estado, updateClient.id_zona_de_trabajo , updateClient.id_cliente]
-        return db.execute(sql,values);
+        const result: any = await db.execute(sql,values);
+        return result.affectedRows;
     }
 };
 
