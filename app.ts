@@ -83,3 +83,5 @@ app.listen(PORT, () => {
 }).on("error", (error) => {
   throw new Error(error.message);
 });
+
+export default app;

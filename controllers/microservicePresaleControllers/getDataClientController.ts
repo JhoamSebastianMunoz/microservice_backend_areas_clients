@@ -5,10 +5,8 @@ import MicroservicePresaleService from "../../services/MicroservicePresaleServic
 let get_dataClien = async(req:Request, res:Response) =>{
     try {
         const{ id_client } = req.params;
-        console.log('ID_CLIENTE: ', id_client);
         
         const data = await MicroservicePresaleService.getDataClient(id_client);
-        console.log('DATOS CLIENTE', data);
 
         return res.status(200).json({
             razon_social: data.razon_social,
