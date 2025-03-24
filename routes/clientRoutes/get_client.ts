@@ -8,7 +8,7 @@ import checkRoleAndPermission from '../../middleware/checkRoleAndPermission';
 
 const router = express.Router();
 
-router.get('/:id_cliente', verifyToken, checkRoleAndPermission(["ADMINISTRADOR"]), getClientValidator.validatorParams, getClientValidator.validator, getClientController);
+router.get('/:id_cliente', verifyToken, checkRoleAndPermission(["ADMINISTRADOR","COLABORADOR"]), getClientValidator.validatorParams, getClientValidator.validator, getClientController);
 
 
 export default router;
