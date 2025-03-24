@@ -7,7 +7,7 @@ import acceptOrRejectController from "../../controllers/clientCreationRequestCon
 const router = express.Router();
 
 
-router.put('/:id_client', verifyToken, checkRoleAndPermission(["ADMINISTRADOR"]), acceptOrRejectController);
+router.put('/:id_client', verifyToken, checkRoleAndPermission(["ADMINISTRADOR","COLABORADOR"]), acceptOrRejectController);
 
 
 export default router;
