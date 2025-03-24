@@ -462,7 +462,7 @@ paths:
       tags:
         - Solicitudes de Creación
       summary: Obtener solicitudes de creación de clientes pendientes
-      description: Permite a un administrador obtener todas las solicitudes de creación de clientes que están en estado pendiente.
+      description: Permite a un administrador y a un colaborador obtener todas las solicitudes de creación de clientes que están en estado pendiente.
       security:
         - bearerAuth: []
       responses:

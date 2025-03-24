@@ -9,7 +9,7 @@ import get_pendingRequestClients from "../../controllers/clientCreationRequestCo
 const router = express.Router();
 
 
-router.get('/', verifyToken, checkRoleAndPermission(["ADMINISTRADOR"]), get_pendingRequestClients);
+router.get('/', verifyToken, checkRoleAndPermission(["ADMINISTRADOR", "COLABORADOR"]), get_pendingRequestClients);
 
 
 export default router;
