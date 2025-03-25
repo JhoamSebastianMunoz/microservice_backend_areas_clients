@@ -43,11 +43,25 @@ app.get('/', (req, res) => {
 // Montar la documentación Swagger en la ruta `/api-docs`
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use(cors({
-  origin: '*', // Temporal para debugging
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:5173',  // Frontend en desarrollo
+  'https://ambitious-sky-070d67b0f.4.azurestaticapps.net',  // Frontend deployado
+  'https://backendareasandclients-apgba5dxbrbwb2ex.eastus2-01.azurewebsites.net'
+];
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 
 // Sentencia CRUD para Zonas de trabajo
