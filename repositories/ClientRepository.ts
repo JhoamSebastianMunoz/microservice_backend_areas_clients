@@ -31,7 +31,7 @@ class ClientRepository {
         const sql = 'UPDATE clientes SET cedula = ?, nombre_completo_cliente = ?, direccion = ?, telefono =  ?, rut_nit = ?, razon_social = ?, estado = ?, id_zona_de_trabajo = ? WHERE id_cliente = ?';
         const values = [ updateClient.cedula, updateClient.nombre_completo_cliente, updateClient.direccion, updateClient.telefono, updateClient.rut_nit, updateClient.razon_social, updateClient.estado, updateClient.id_zona_de_trabajo , updateClient.id_cliente]
         const result: any = await db.execute(sql,values);
-        return result.affectedRows;
+        return result;
     }
 };
 
