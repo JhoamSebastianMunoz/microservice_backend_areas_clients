@@ -21,7 +21,7 @@ telefono varchar(15) not null,
 rut_nit varchar(30) null,
 razon_social varchar(120) null,
 fecha_registro DATE NOT NULL DEFAULT (CURRENT_DATE),
-estado enum('Activo', 'Inactivo') not null default 'Activo',
+estado enum('Activo', 'Inactivo', 'Pendiente') not null default 'Activo',
 id_zona_de_trabajo int,
 foreign key (id_zona_de_trabajo) references zonas_de_trabajo(id_zona_de_trabajo)
 on delete set null on update cascade
@@ -39,7 +39,3 @@ select* from zonas_de_trabajo;
 select * from clientes;
 select * from zonas_de_trabajo
 join clientes using(id_zona_de_trabajo);
-
-
-
-

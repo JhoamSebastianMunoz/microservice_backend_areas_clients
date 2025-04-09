@@ -11,7 +11,7 @@ class ClientRepository {
         return db.execute(sql, values);
     }
     static async getAll(): Promise<GetClient[]> {
-        const sql = 'SELECT * FROM clientes';
+        const sql = "const sql = SELECT * FROM clientes WHERE estado IN('Activo', 'Inactivo')";
         const [rows] = await db.execute(sql); 
         return rows as GetClient[];
     }
